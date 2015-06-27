@@ -1,0 +1,76 @@
+package co.adun.mvnejb3jpa.web.controller;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.business.service.UserService;
+import co.adun.mvnejb3jpa.business.service.WorkQueueService;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+import co.adun.mvnejb3jpa.web.auth.WebSecurityContext;
+import co.adun.mvnejb3jpa.web.controller.BaseController;
+import co.adun.mvnejb3jpa.web.model.PageModel;
+import co.adun.mvnejb3jpa.web.model.WorkQueueModel;
+
+@Controller
+@RequestMapping(value = "/workQueue")
+public class WorkQueueController extends BaseController {
+
+	private static final Logger logger = Logger.getLogger(WorkQueueController.class.getName());
+
+	@Autowired(required = false)
+	@Qualifier("userService")
+	public UserService userService;
+
+	@Autowired(required = false)
+	@Qualifier("workQueueService")
+	public WorkQueueService workQueueService;
+
+	@Override
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView doGet(HttpServletRequest request) {
+		logger.log(Level.INFO, "Entered into doGet()");
+		String view = "workQueue";
+
+		String name = WebSecurityContext.getUsername();
+		LtUser user;
+		try {
+			this.model = new WorkQueueModel();
+			user = userService.getCurrentUser(name);
+
+			List<LtLeadSubject> workQueueItems = workQueueService.getWorkQueueItems(user);
+
+			((WorkQueueModel)model).setWorkQueueItems(workQueueItems);
+
+			setPageModel(model);
+
+		}
+		catch (BusinessException e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+		finally {
+		}
+
+		return new ModelAndView(view, "model", model);
+	}
+
+	@Override
+	@RequestMapping(method = RequestMethod.POST)
+	public ModelAndView doPost(PageModel model, BindingResult result, HttpServletRequest request) {
+		logger.log(Level.INFO, "Entered into doPost()");
+
+		return doGet(request);
+	}
+}

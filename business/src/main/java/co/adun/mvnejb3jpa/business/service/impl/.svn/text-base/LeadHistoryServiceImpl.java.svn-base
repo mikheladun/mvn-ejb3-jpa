@@ -1,0 +1,21 @@
+package co.adun.business.service.impl;
+
+import co.adun.business.service.LeadHistoryService;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * A stateless session bean to provide business service implementation
+ * 
+ * @author Mikhel Adun
+ * 
+ */
+@Component
+@Stateless
+@EJB(name = "java:global/LeadHistoryService", beanInterface = LeadHistoryService.class)
+public class LeadHistoryServiceImpl implements LeadHistoryService
+{
+}

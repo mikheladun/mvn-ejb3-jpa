@@ -1,0 +1,52 @@
+package co.adun.mvnejb3jpa.persistence.eao.impl;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+
+import org.hibernate.Hibernate;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectTravelEao;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravel;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravelSource;
+
+/**
+ * A entity access object class to provide persistent storage functions and CRUD
+ * operations for Member entity. Strongly-typed interface created since it could
+ * be used by @Autowired
+ * 
+ * @author Mikhel Adun
+ * 
+ */
+@Component
+@Stateless
+@Transactional
+public class LtSubjectTravelEaoImpl extends BaseEaoImpl<LtSubjectTravel> implements LtSubjectTravelEao {
+
+	private static final Logger logger = Logger.getLogger(LtSubjectTravelEaoImpl.class.getName());
+
+	@Override
+	public Class<LtSubjectTravel> getEntityClass() {
+		return LtSubjectTravel.class;
+	}
+
+	@Override
+	public LtSubjectTravel findBySubjectId(Long id) {
+		LtSubjectTravel ltSubjectTravel = null;
+		List<LtSubjectTravel> travelInfo = this.findByProperty("ltSubject.id", id);
+		if(!travelInfo.isEmpty()) {
+			ltSubjectTravel = travelInfo.iterator().next();
+			Hibernate.initialize(ltSubjectTravel.getLtSubjectTravelSources());
+			for(LtSubjectTravelSource source : ltSubjectTravel.getLtSubjectTravelSources()) {
+				Hibernate.initialize(source);
+				Hibernate.initialize(source.getSourceCode());
+			}
+			Hibernate.initialize(ltSubjectTravel.getTravelDirectionCode());
+		}
+
+		return ltSubjectTravel;
+	}
+}

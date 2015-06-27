@@ -1,0 +1,180 @@
+package co.adun.mvnejb3jpa.persistence.eao.impl;
+
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectEao;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Query;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+/**
+ * A entity access object class to provide persistent storage functions and CRUD
+ * operations for Member entity. Strongly-typed interface created since it could
+ * be used by @Autowired
+ * 
+ * @author Mikhel Adun
+ * 
+ */
+@Component
+@Stateless
+@Transactional
+public class LtSubjectEaoImpl extends BaseEaoImpl<LtSubject> implements
+		LtSubjectEao {
+
+	private static final Logger logger = Logger
+			.getLogger(LtSubjectEaoImpl.class.getName());
+
+	private static final String HQL_SUBJECT_QRY = "SELECT DISTINCT s FROM LtSubject s  LEFT JOIN FETCH s.ltLeadSubjects ls LEFT  JOIN FETCH ls.id lsi LEFT JOIN FETCH s.genderCode"
+			+ " LEFT JOIN FETCH s.ltLeads l LEFT JOIN FETCH l.statusCode LEFT JOIN FETCH s.ltSubjectCitizenshipCountries sctz"
+			+ " LEFT JOIN FETCH s.countryCode";
+
+	@Override
+	public Class<LtSubject> getEntityClass() {
+		return LtSubject.class;
+	}
+
+	@Override
+	public List<LtSubject> findSubjectByName(String lastName, String firstName, String lsid) {
+		// convert name to upper case
+		firstName = firstName.toLowerCase();
+		lastName = lastName.toLowerCase();
+		// create a query to find subject by name
+		String queryString = " from LtSubject s   where ";
+		// String queryString = HQL_SUBJECT_QRY + " where ";
+		if (lastName != null && lastName.trim().length() > 0) {
+			queryString += "lower(s.lastname) like '" + "%" + lastName + "%"
+					+ "'";
+		}
+		if ((firstName != null && firstName.trim().length() > 0)
+				&& (lastName != null && lastName.trim().length() > 0)) {
+			queryString += " AND lower(s.firstname) like '" + "%" + firstName
+					+ "%" + "'";
+		} else if (firstName != null && firstName.trim().length() > 0) {
+			queryString += " lower(s.firstname) like '" + "%" + firstName + "%"
+					+ "'";
+		}
+		if (((firstName != null && firstName.trim().length() > 0) || (lastName != null && lastName
+				.trim().length() > 0))
+				&& (lsid != null && lsid.trim().length() > 0)) {
+			queryString += " AND lower(s.lsid) like '" + lsid + "'";
+		} else if (lsid != null && lsid.trim().length() > 0) {
+			queryString += " lower(s.lsid) like '" + lsid + "'";
+		}
+
+		Query query = this.createHqlQuery(queryString);
+		List<LtSubject> subjectList = (List<LtSubject>) this.executeQuery(query);
+		// populate the country of citizenship
+
+		return subjectList;
+	}
+
+	@Override
+	public List<LtSubject> findSubjectByLeadId(LtSubject ltSubject) {
+		String leadid = null;
+		for (LtLeadSubject leadSubj : ltSubject.getLtLeadSubjects()) {
+			// take 1st leadid --not sure --need explanaton
+			leadid = leadSubj.getLtLead().getId().toString();
+			break;
+		}
+		// create a query to find subject by lead id
+		String queryString = HQL_SUBJECT_QRY + " where ";
+		if (leadid != null && leadid.trim().length() > 0) {
+			queryString += " ls.ltLead.id like '" + leadid + "'";
+		}
+
+		Query query = this.createHqlQuery(queryString);
+		List<LtSubject> subjectList = (List<LtSubject>) this.executeQuery(query);
+		// populate the country of citizenship
+
+		return subjectList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LtSubject> findSubjectByLsidAndName(LtSubject ltSubject) {
+
+		String lastName = ltSubject.getLastname();
+		if(!StringUtils.isEmpty(lastName)) lastName = lastName.toLowerCase();
+		String firstName = ltSubject.getFirstname();
+		if(!StringUtils.isEmpty(firstName)) firstName = firstName.toLowerCase();
+		String lsid = ltSubject.getLsid();
+		if(!StringUtils.isEmpty(lsid)) lsid = lsid.toLowerCase();
+
+		logger.info("Enter findSubjectByLsidAndName()..in EAO");
+		String queryString = HQL_SUBJECT_QRY + " where ";
+		String whereClause = "";
+		if (lastName != null && lastName.trim().length() > 0) {
+			whereClause += "lower(s.lastname) like '" + "%" + lastName + "%"
+					+ "'";
+		}
+		if ((firstName != null && firstName.trim().length() > 0)
+				&& (lastName != null && lastName.trim().length() > 0)) {
+			whereClause += " AND lower(s.firstname) like '" + "%" + firstName
+					+ "%" + "'";
+		} else if (firstName != null && firstName.trim().length() > 0) {
+			whereClause += " lower(s.firstname) like '" + "%" + firstName + "%"
+					+ "'";
+		}
+		if (((firstName != null && firstName.trim().length() > 0) || (lastName != null && lastName
+				.trim().length() > 0))
+				&& (lsid != null && lsid.trim().length() > 0)) {
+			whereClause += " AND lower(s.lsid) like '" + "%" + lsid + "%" + "'";
+		} else if (lsid != null && lsid.trim().length() > 0) {
+			whereClause += " lower(s.lsid) like '" + "%" + lsid + "%" + "'";
+		}
+
+		List<LtSubject> subjectList = Collections.EMPTY_LIST;
+		if (!"".equals(whereClause)) {
+			Query query = this.createHqlQuery(queryString + whereClause);
+			subjectList = (List<LtSubject>) this.executeQuery(query);
+		}
+		logger.info("Leaving findSubjectByLsidAndName()..in EAO + ");
+		return subjectList;
+	}
+
+	@Override
+	public List<LtSubject> findSubjectByCriteria(LtSubject ltSubject) {
+		String surname = ltSubject.getLastname();
+		String firstName = ltSubject.getFirstname();
+		String lsid = ltSubject.getLsid();
+
+		EntityManager em = getEntityManager();
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<LtSubject> cq = cb.createQuery(LtSubject.class);
+		Root<LtSubject> subject = cq.from(LtSubject.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		Predicate firstNamePredicate, surnamePredicate;
+		if ((firstName != null) && (!(firstName.isEmpty()))) {
+			firstNamePredicate = cb.like(
+					cb.upper(subject.<String> get("firstname")), "%"
+							+ firstName + "%");
+			predicateList.add(firstNamePredicate);
+		}
+		if ((surname != null) && (!(surname.isEmpty()))) {
+			surnamePredicate = cb.like(
+					cb.upper(subject.<String> get("lastname")), "%" + surname
+							+ "%");
+			predicateList.add(surnamePredicate);
+		}
+		Predicate[] predicates = new Predicate[predicateList.size()];
+		predicateList.toArray(predicates);
+		cq.where(predicates);
+		return em.createQuery(cq).getResultList();
+
+	}
+}

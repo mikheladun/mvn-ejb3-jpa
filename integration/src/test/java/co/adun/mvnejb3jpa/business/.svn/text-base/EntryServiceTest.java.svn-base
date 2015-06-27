@@ -1,0 +1,112 @@
+package co.adun.business;
+
+import javax.inject.Inject;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.business.service.EntryService;
+import co.adun.mvnejb3jpa.persistence.eao.ClassAdmissionCodeEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectEao;
+import co.adun.mvnejb3jpa.persistence.eao.PortEntryCodeEao;
+import co.adun.mvnejb3jpa.persistence.entity.ClassAdmissionCode;
+import co.adun.mvnejb3jpa.persistence.entity.LtLead;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.PortEntryCode;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring/spring-context-integration.xml" })
+@Transactional
+@TransactionConfiguration(defaultRollback = true)
+
+public class EntryServiceTest {
+
+	@Inject
+	private EntryService entryService;
+	
+	@Inject
+	private LtSubjectEao subjectEao;
+	
+	@Inject
+    private ClassAdmissionCodeEao classAdmCodes;
+	
+	@Inject
+    private PortEntryCodeEao portOfEntryCodes;
+	
+	@Test
+	public void getEntryByLead(){
+		Long leadid = 100000L;
+		LtLead ltLead = new LtLead();
+		ltLead.setId(leadid);
+		
+		LtSubject ltSubject;
+		try {
+			ltSubject = entryService.getEntryInformation(ltLead);
+		
+			System.out.println("Find By Lead :: class of admission: " + ltSubject.getClassAdmissionCode().getDescription());
+			System.out.println("Find By Lead :: Port of Entry: " + ltSubject.getPortEntryCode().getDescription());
+			System.out.println("Find By Lead :: Date of entry: " + ltSubject.getEntryDate().toString());
+			System.out.println("Find By Lead :: Admit until Date: " + ltSubject.getAdmitUntilDate().toString());
+	//		System.out.println("Find By Lead :: Adjusted admit until date: " + ltSubject.getAdjustedAdmitUntilDate().toString());
+			System.out.println("Find By Lead :: Date of Departure: " + ltSubject.getDepartureDate().toString());
+			System.out.println("Find By Lead :: Duration of status: " + ltSubject.getDurationStatus());
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void getEntryBySubject(){
+		Long subjectid = 100L;
+		LtSubject ltSubject = new LtSubject();
+		ltSubject.setId(subjectid);
+		
+		LtSubject ltsubject;
+		try {
+			ltsubject = entryService.getEntryInformation(ltSubject);
+		
+			System.out.println("Find By Subject :: class of admission: " + ltsubject.getClassAdmissionCode().getDescription());
+			System.out.println("Find By Subject :: Port of Entry: " + ltsubject.getPortEntryCode().getDescription());
+			System.out.println("Find By Subject :: Date of entry: " + ltsubject.getEntryDate().toString());
+			System.out.println("Find By Subject :: Admit until Date: " + ltsubject.getAdmitUntilDate().toString());
+	//		System.out.println("Find By Subject :: Adjusted admit until date: " + ltsubject.getAdjustedAdmitUntilDate().toString());
+			System.out.println("Find By Subject :: Date of Departure: " + ltsubject.getDepartureDate().toString());
+			System.out.println("Find By Subject :: Duration of status: " + ltsubject.getDurationStatus());
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void save(){
+		Long subjectid = 100L;
+		LtSubject ltSubject = subjectEao.findById(subjectid);
+		ltSubject.setDurationStatus('N');
+		
+		try {
+			ClassAdmissionCode cao = new ClassAdmissionCode();
+			cao.setId(270L);
+			ltSubject.setClassAdmissionCode(cao);
+			
+			PortEntryCode poe = new PortEntryCode();
+			poe.setId(224L);
+			ltSubject.setPortEntryCode(poe);
+			
+			entryService.save(ltSubject);
+		
+			ltSubject = entryService.getEntryInformation(ltSubject);
+
+			System.out.println("Duration Status: " + ltSubject.getDurationStatus());
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

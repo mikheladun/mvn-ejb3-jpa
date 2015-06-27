@@ -1,0 +1,18 @@
+/**
+ * @Author: Kalyan
+ */
+
+package co.adun.business.service;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadIdentifyingNumber;
+
+import java.util.Set;
+
+public  interface IdentifyingNumberService extends BusinessService{
+
+	public void save(LtLeadIdentifyingNumber ltLeadIdentifyingNumber) throws BusinessException;
+	
+	public void save(Set<LtLeadIdentifyingNumber> ltLeadIdentifyingNumbers ) throws BusinessException;
+		
+}

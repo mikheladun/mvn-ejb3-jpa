@@ -1,0 +1,26 @@
+package co.adun.mvnejb3jpa.web.model;
+
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+/**
+ * 
+ * @author Mikhel Adun
+ *
+ */
+@Component
+public class WorkQueueModel implements PageModel {
+
+    List<LtLeadSubject> workQueueItems;
+
+    public List<LtLeadSubject> getWorkQueueItems() {
+        return workQueueItems;
+    }
+
+    public void setWorkQueueItems(List<LtLeadSubject> workQueueItems) {
+        this.workQueueItems = workQueueItems;
+    } 
+}

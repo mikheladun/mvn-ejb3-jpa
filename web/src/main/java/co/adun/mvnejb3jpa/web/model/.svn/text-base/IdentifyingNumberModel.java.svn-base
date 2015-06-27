@@ -1,0 +1,113 @@
+package co.adun.mvnejb3jpa.web.model;
+
+import co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumber;
+import co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumberSource;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class IdentifyingNumberModel implements PageModel {
+
+    LtIdentifyingNumber ltIdentifierNumber;
+    List<LtIdentifyingNumberSource> sourceCodes;
+
+    DateValueModel issueDate;
+    DateValueModel expirationDate;
+    DateValueModel eventDate;
+    DateValueModel creationDate;
+    DateValueModel updateDate;
+    DateValueModel incidentDate;
+    DateValueModel naturalizationDate;
+    DateValueModel birthDate;
+
+    public LtIdentifyingNumber getLtIdentifierNumber() {
+		return ltIdentifierNumber;
+	}
+
+	public void setLtIdentifierNumber(LtIdentifyingNumber ltIdentifierNumber) {
+		this.ltIdentifierNumber = ltIdentifierNumber;
+	}
+
+	public DateValueModel getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(DateValueModel birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public DateValueModel getIssueDate() {
+        return issueDate;
+    }
+
+    public void setIssueDate(DateValueModel issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public DateValueModel getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(DateValueModel expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public DateValueModel getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(DateValueModel eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public DateValueModel getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(DateValueModel creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public DateValueModel getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(DateValueModel updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public DateValueModel getIncidentDate() {
+        return incidentDate;
+    }
+
+    public void setIncidentDate(DateValueModel incidentDate) {
+        this.incidentDate = incidentDate;
+    }
+
+    public DateValueModel getNaturalizationDate() {
+        return naturalizationDate;
+    }
+
+    public void setNaturalizationDate(DateValueModel naturalizationDate) {
+        this.naturalizationDate = naturalizationDate;
+    }
+
+    public List<LtIdentifyingNumberSource> getSourceCodes() {
+        return sourceCodes;
+    }
+
+    public void setSourceCodes(List<LtIdentifyingNumberSource> sourceCodes) {
+        this.sourceCodes = sourceCodes;
+    }
+
+    public DateValueModel getBirthDateModel() {
+        return birthDate;
+    }
+
+    public void setBirthDateModel(DateValueModel birthDate) {
+        this.birthDate = birthDate;
+    }
+
+}

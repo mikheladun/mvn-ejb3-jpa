@@ -1,0 +1,192 @@
+package co.adun.mvnejb3jpa.business;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.business.service.SubjectService;
+import co.adun.mvnejb3jpa.business.service.SubjectTravelService;
+import co.adun.mvnejb3jpa.business.service.SupportDataService;
+import co.adun.mvnejb3jpa.business.service.TimerService;
+import co.adun.mvnejb3jpa.business.service.UserService;
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectTravelEao;
+import co.adun.mvnejb3jpa.persistence.eao.SourceCodeEao;
+import co.adun.mvnejb3jpa.persistence.eao.TravelDirectionCodeEao;
+import co.adun.mvnejb3jpa.persistence.entity.CompositeId;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravel;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravelSource;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+import co.adun.mvnejb3jpa.persistence.entity.TravelDirectionCode;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring/spring-context-integration.xml" })
+@Transactional
+@TransactionConfiguration(defaultRollback = true)
+public class SubjectTravelServiceTest {
+
+	@Inject
+	private SubjectService service;
+
+	@Inject
+	private LtSubjectEao subjectEao;
+
+	@Inject
+	private SubjectTravelService travelService;
+	@Inject
+	private LtSubjectTravelEao travelServiceEao;
+	@Inject
+	private TravelDirectionCodeEao directionServiceEao;
+
+	@Inject
+	private SupportDataService supportDataService;
+
+	@Inject
+	UserService userService;
+
+	@Inject
+	TimerService timerService;
+
+	@Inject
+	SourceCodeEao sourceCodeEao;
+
+	@Test
+	public void findSubjectTravelInfoBySubjectid() {
+
+		try {
+			// create a LtSubject model object and use that to perform search
+			LtSubject ltSubject = subjectEao.findById(100L);
+
+			LtSubjectTravel subjectTravel = travelService.getSubjectTravel(ltSubject);
+			if (subjectTravel != null) {
+				System.out.println(" Travel Carrier = " + subjectTravel.getCarrier());
+				System.out.println(" Travel Flight Number = " + subjectTravel.getFlightNumber());
+				System.out.println(" Travel Comment = " + subjectTravel.getTravelComment());
+
+				for (LtSubjectTravelSource source : subjectTravel.getLtSubjectTravelSources()) {
+					System.out.println(" Subject Travel Source: " + source.getSourceCode().getDescription());
+				}
+
+				Assert.assertNotNull(subjectTravel);
+			}
+		}
+		catch (BusinessException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			Assert.fail();
+			e.printStackTrace();
+		}
+		return;
+	}
+
+	@Test
+	public void saveSubjectTravelInfo() {
+
+		try {
+
+			// find the subject by ID
+
+			LtUser modifiedUser = userService.getSystemUser();
+			Date modifiedDate = timerService.getSystemTime();
+			LtUser createUser = userService.getSystemUser();
+			Date createDate = timerService.getSystemTime();
+
+			// create a LtSubject model object and use that to perform search
+			// LtSubject ltSubject = subjectEao.findById(100L);
+
+			LtSubject ltSubject = new LtSubject();
+			ltSubject.setId(100L);
+
+			// populate LtSubjectTravel
+			LtSubjectTravel ltSubjectTravel = new LtSubjectTravel();
+			ltSubjectTravel.setLtSubject(ltSubject);
+			ltSubjectTravel.setCarrier("AMerican");
+			ltSubjectTravel.setFlightNumber("400");
+			ltSubjectTravel.setTravelDate(createDate);
+
+			// set Direction code to INBOUND
+			TravelDirectionCode travelDirectionCode = directionServiceEao.findById(100L);
+			ltSubjectTravel.setTravelDirectionCode(travelDirectionCode);
+
+			// Save Subject Travel Servcice object
+
+			travelService.saveSubjectTravel(ltSubjectTravel);
+
+			System.out.println("Saved Subject Travel number under ID: " + ltSubjectTravel.getId());
+
+			// Save Subject Travel sources
+
+			Set<LtSubjectTravelSource> ltSubjectTravelSources = new HashSet<LtSubjectTravelSource>();
+
+			// set source Code for travel info.
+			LtSubjectTravelSource coc1 = new LtSubjectTravelSource();
+			// composite ID property relates source to the identifying number
+			CompositeId sourcecomp = new CompositeId();
+			sourcecomp.setId(101L); // AD
+			sourcecomp.setCompId(ltSubjectTravel.getId());
+			coc1.setId(sourcecomp);
+			coc1.setSourceCode(supportDataService.getSourceCodes().get(0));
+			coc1.setLtSubjectTravel(ltSubjectTravel);
+			coc1.setLtUserByCreateBy(createUser);
+			coc1.setLtUserByModifiedBy(modifiedUser);
+			coc1.setCreateDate(createDate);
+			coc1.setModifiedDate(modifiedDate);
+
+			LtSubjectTravelSource coc2 = new LtSubjectTravelSource();
+			// composite ID property relates source to the identifying number
+			CompositeId sourcecomp2 = new CompositeId();
+			sourcecomp2.setId(102L); // AP
+			sourcecomp2.setCompId(ltSubjectTravel.getId());
+			coc2.setId(sourcecomp2);
+
+			coc2.setSourceCode(supportDataService.getSourceCodes().get(2));
+			coc2.setLtSubjectTravel(ltSubjectTravel);
+			coc2.setLtUserByCreateBy(createUser);
+			coc2.setLtUserByModifiedBy(modifiedUser);
+			coc2.setCreateDate(createDate);
+			coc2.setModifiedDate(modifiedDate);
+
+			ltSubjectTravelSources.add(coc1);
+			ltSubjectTravelSources.add(coc2);
+
+			// Add sources to tRavel Info object
+			ltSubjectTravel.setLtSubjectTravelSources(ltSubjectTravelSources);
+
+			// ltSubjectTravel.setLtUserByCreateBy(createUser);
+			// ltSubjectTravel.setLtUserByModifiedBy(modifiedUser);
+			// ltSubjectTravel.setCreateDate(createDate);
+			// ltSubjectTravel.setModifiedDate(modifiedDate);
+			//
+
+			// Update the current subject
+			travelService.saveSubjectTravel(ltSubjectTravel);
+
+		}
+		catch (BusinessException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Assert.fail();
+		}
+		return;
+	}
+}

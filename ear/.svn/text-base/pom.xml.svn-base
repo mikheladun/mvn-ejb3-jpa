@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>leadtrac</artifactId>
+		<groupId>gov.dhs.ice</groupId>
+		<version>0.1</version>
+	</parent>
+
+	<artifactId>leadtrac-ear</artifactId>
+	<packaging>ear</packaging>
+
+	<name>LeadTrac Module</name>
+
+	<dependencies>
+
+		<!-- Depend on the ejb module and war so that we can package them -->
+		<dependency>
+			<groupId>gov.dhs.ice</groupId>
+			<artifactId>leadtrac-core</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>gov.dhs.ice</groupId>
+			<artifactId>leadtrac-security</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>gov.dhs.ice</groupId>
+			<artifactId>leadtrac-persistence</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>gov.dhs.ice</groupId>
+			<artifactId>leadtrac-business</artifactId>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>gov.dhs.ice</groupId>
+			<artifactId>leadtrac-web</artifactId>
+			<type>war</type>
+		</dependency>
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${version.spring}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${version.aspectj}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${version.aspectj}</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-core</artifactId>
+			<version>${version.tiles}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-jsp</artifactId>
+			<version>${version.tiles}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>leadtrac</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>${version.ear.plugin}</version>
+				<configuration>
+					<!-- Tell Maven we are using Java EE 6 -->
+					<version>6</version>
+					<!-- Use Java EE ear libraries as needed. Java EE ear libraries are 
+						an easy way to package any libraries needed in the ear, and automatically 
+						have any modules (EJB-JARs and WARs) use them -->
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<fileNameMapping>no-version</fileNameMapping>
+				</configuration>
+			</plugin>
+			<!-- The JBoss AS plugin deploys your ear to a local JBoss AS container -->
+			<!-- Due to Maven's lack of intelligence with EARs we need to configure 
+				the jboss-as maven plugin to skip deployment for all modules. We then enable 
+				it specifically in the ear module. -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<configuration>
+					<filename>${project.parent.artifactId}.ear</filename>
+					<skip>false</skip>
+					<unpack>true</unpack>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<!-- When built in OpenShift the 'openshift' profile will be used when 
+				invoking mvn. -->
+			<!-- Use this profile for any OpenShift specific customization your app 
+				will need. -->
+			<!-- By default that is to put the resulting archive into the 'deployments' 
+				folder. -->
+			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+			<id>openshift</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-ear-plugin</artifactId>
+						<version>${version.ear.plugin}</version>
+						<configuration>
+							<outputDirectory>deployments</outputDirectory>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

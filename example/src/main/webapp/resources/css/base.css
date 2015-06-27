@@ -1,0 +1,32 @@
+body { font-size:14px !important; text-align:left; }
+h1, h2, h3, h4, h5 { text-align:left; clear:both; }
+legend { visibility:hidden; display:none; }
+table { border:0; }
+th, td { border:0 !important; }
+hr.clear { border:1px solid #ddd; clear:both; }
+
+.visible { visibility:visible !important; display:block !important; }
+.hidden { visibility:hidden !important; display:none !important; }
+
+.pad { padding:1em; }
+.pad-lr { padding:0 1em; }
+.pad-tb { padding:1em 0; }
+
+.yui3-form-aligned .yui3-control-group label { text-align:left; }
+.yui3-form label { color: #000; text-wrap:none; white-space:nowrap; }
+.yui3-form legend { margin:0 !important; padding:0 !important; }
+.yui3-form-aligned .yui3-control-group { padding:0 1em; }
+.yui3-form input, .yui3-form select { font-size:100% !important }
+.yui3-form-aligned .yui3-control-group label { width:90px; !important }
+.yui3-form-aligned .yui3-control-group label.wide { width:140px; !important }
+
+.buttons { text-align:right; padding:.5em 0; }
+.buttons input { margin-right:1em; }
+.buttons .yui3-link { margin-right:2em; text-decoration:underline; }
+.buttons.center { text-align:center !important; background-color:#ccc; }
+
+span.error { color:red; }
+div.error { font-weight:bolder; padding-bottom:1em; color:red; }
+.asterisk { color:red; }
+.title { padding-bottom:1em; font-weight:bolder; text-transform:uppercase; }
+.clear { clear:both; }

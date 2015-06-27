@@ -1,0 +1,16 @@
+package co.adun.business.service;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+
+import java.util.List;
+
+/**
+ * @author Mikhel Adun
+ */
+public interface LeadSubjectService extends BusinessService {
+    public LtLeadSubject getLtLeadSubject(Long leadId, Long subjectId) throws BusinessException;
+
+    public LtLeadSubject save(LtLeadSubject ltLeadSubject) throws BusinessException;
+    public List<LtLeadSubject> save(List<LtLeadSubject> ltLeadSubjects) throws BusinessException;
+}

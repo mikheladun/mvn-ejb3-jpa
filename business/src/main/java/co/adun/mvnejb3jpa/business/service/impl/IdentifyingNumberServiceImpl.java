@@ -1,0 +1,121 @@
+/**
+ * @Author - Kalyan
+ */
+
+package co.adun.mvnejb3jpa.business.service.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Component;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.business.service.IdentifyingNumberService;
+import co.adun.mvnejb3jpa.business.service.TimerService;
+import co.adun.mvnejb3jpa.business.service.UserService;
+import co.adun.mvnejb3jpa.persistence.eao.LtIdentifyingNumberEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtIdentifyingNumberSourceEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtLeadEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtLeadIdentifyingNumberEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtUserEao;
+import co.adun.mvnejb3jpa.persistence.eao.NumberTypeCodeEao;
+import co.adun.mvnejb3jpa.persistence.eao.SourceCodeEao;
+import co.adun.mvnejb3jpa.persistence.eao.StatusCodeEao;
+import co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumber;
+import co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumberSource;
+import co.adun.mvnejb3jpa.persistence.entity.LtLead;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadIdentifyingNumber;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+
+@Component
+@Stateless
+@EJB(name = "java:global/IdentifyingNumberService", beanInterface = IdentifyingNumberService.class)
+public class IdentifyingNumberServiceImpl implements IdentifyingNumberService {
+	
+	private static final Logger logger = Logger.getLogger(LeadServiceImpl.class.getName());
+	
+	@Inject
+	LtLeadEao eao;
+	
+	@Inject
+	StatusCodeEao statusCodeEao;
+	
+	@Inject
+	NumberTypeCodeEao numberTypeCodeEao;
+	
+	@Inject
+	SourceCodeEao sourceCodeEao;
+	
+	@Inject
+	LtUserEao ltUserEAO;
+	
+	@Inject
+	TimerService timerService;
+	
+	@Inject
+	UserService userService;
+	
+	@Inject
+	LtIdentifyingNumberEao numberEao;
+	
+	@Inject
+	LtIdentifyingNumberSourceEao sourceEao;
+	
+	@Inject
+	private LtLeadIdentifyingNumberEao leadIdentEao;
+	
+	@Override
+	public void save(LtLeadIdentifyingNumber ltLeadIdentifyingNumber) throws BusinessException {
+		Date createdate = timerService.getSystemTime();
+		Date modifieddate = timerService.getSystemTime();
+		
+		LtUser createdby = userService.getSystemUser();
+		LtUser modifiedby = userService.getSystemUser();
+		
+		if (null == ltLeadIdentifyingNumber.getLtUserByCreateBy())
+			ltLeadIdentifyingNumber.setLtUserByCreateBy(createdby);
+		
+		if (null == ltLeadIdentifyingNumber.getCreateDate())
+			ltLeadIdentifyingNumber.setCreateDate(createdate);
+		
+		ltLeadIdentifyingNumber.setLtUserByModifiedBy(modifiedby);
+		ltLeadIdentifyingNumber.setModifiedDate(modifieddate);
+		
+		LtLead ltLead = ltLeadIdentifyingNumber.getLtLead();
+		
+		LtIdentifyingNumber ltIdentifyingNumber = ltLeadIdentifyingNumber.getLtIdentifyingNumber();
+		
+		if (null == ltLead || null == ltIdentifyingNumber)
+			throw new BusinessException("Object is null");
+		if (null == ltLead.getId() || null == ltIdentifyingNumber.getId()) {
+			throw new BusinessException("id is null");
+		}
+		
+		if (null == ltIdentifyingNumber.getNumberTypeCode()) {
+			throw new BusinessException("missing numbertype code");
+		}
+		
+		if (null == ltIdentifyingNumber.getIdentifyingNumber()) {
+			throw new BusinessException("missing number in identifying number");
+		}
+		
+		List<LtIdentifyingNumberSource> identnumSources = sourceEao.findByProperty("ltIdentifyingNumber", ltIdentifyingNumber);
+		if (null == identnumSources || identnumSources.size() == 0) {
+			throw new BusinessException("no identifying number sources found");
+		}
+
+		leadIdentEao.saveOrUpdate(ltLeadIdentifyingNumber);
+	}
+	
+	public void save(Set<LtLeadIdentifyingNumber> ltLeadIdentifyingNumbers) throws BusinessException {
+		for (LtLeadIdentifyingNumber ltLeadIdentifyingNumber : ltLeadIdentifyingNumbers) {
+			save(ltLeadIdentifyingNumber);
+		}
+	}
+}

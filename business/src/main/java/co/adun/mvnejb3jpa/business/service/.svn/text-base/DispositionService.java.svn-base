@@ -1,0 +1,12 @@
+package co.adun.business.service;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.persistence.entity.LtLead;
+
+/**
+ * @author Mikhel Adun
+ */
+public interface DispositionService extends BusinessService {
+
+	public void saveDisposition(LtLead ltLead) throws BusinessException;
+}

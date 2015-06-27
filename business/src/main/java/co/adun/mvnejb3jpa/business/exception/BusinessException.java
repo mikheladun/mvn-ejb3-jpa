@@ -1,0 +1,93 @@
+package co.adun.mvnejb3jpa.business.exception;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import co.adun.mvnejb3jpa.BaseException;
+import co.adun.mvnejb3jpa.ExceptionMessage;
+
+/** An exception that can hold multiple messages.
+ *
+ * @author Mikhel Adun, Ram Mahajan
+ *
+ **/
+public class BusinessException extends BaseException
+{
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("unused")
+	private List<ExceptionMessage> messages = new ArrayList<ExceptionMessage>();
+    private String key;
+
+    public String getKey() {
+    	return key;
+    }
+
+    public void setKey(String newKey) {
+    	this.key = newKey;
+    }
+
+	public BusinessException() {
+		super();
+	}
+
+	public BusinessException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	/**
+     * Creates a new BusinessException wrapping another exception, and with a detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     * @param cause is the exception 
+     */
+    public BusinessException(String message, String key, Throwable cause) {
+    	super(message, cause);
+    	setKey( key );
+    }
+
+    /**
+     * Creates a BusinessException with the specified detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     */
+    public BusinessException(String message, String key ) {
+		super(message);
+		setKey( key );
+    }
+    
+    /**
+     * Creates a new BusinessDomainException wrapping another exception, and with no detail message.
+     * @param exception the wrapped exception.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     */
+    public BusinessException(Throwable cause, String key) {
+		super(cause);
+		setKey( key );
+    }
+
+	public BusinessException(String message) {
+		super(new ExceptionMessage(message));
+	}
+
+	public BusinessException(Throwable cause) {
+		super(cause);
+	}
+
+	public BusinessException(Set<ExceptionMessage> messagess) {
+		super();
+		setmessagess(messagess);
+	}
+
+	public BusinessException(ExceptionMessage messages) {
+		super();
+		add(messages);
+	}
+
+	public BusinessException(List<String> messagess) {
+		super();
+		addStringMessages(messagess);
+	}
+
+}

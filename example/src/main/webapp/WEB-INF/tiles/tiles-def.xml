@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	<!-- Main template for other screens -->
+	<definition name="main" template="/WEB-INF/tiles/templates/main/template.jsp">
+		<put-attribute name="title" value="LeadTrac Web" type="string" />
+		<put-attribute name="pageTitle" value="LeadTrac Web" type="string" />
+		<put-attribute name="style" value="/WEB-INF/tiles/templates/main/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/templates/main/script.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/templates/main/header.jsp" />
+		<put-attribute name="nav" value="/WEB-INF/tiles/templates/main/nav.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/tiles/templates/main/sidebar.jsp" />
+		<put-attribute name="breadcrumb" value="/WEB-INF/tiles/templates/main/breadcrumb.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/templates/main/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/templates/main/footer.jsp" />
+	</definition>
+
+	<definition name="example" extends="main">
+		<put-attribute name="pageTitle" value="Example" type="string" />
+		<put-attribute name="style" value="/WEB-INF/pages/example/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/example/script.jsp" />
+		<put-attribute name="breadcrumb" value="/WEB-INF/pages/common/breadcrumb.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/example/example.jsp" />
+	</definition>
+
+	<!-- Base template for Login screen -->
+	<definition name="xmlView" template="/WEB-INF/pages/common/xmlView.jsp">
+	</definition>
+
+</tiles-definitions>

@@ -1,0 +1,56 @@
+package co.adun.mvnejb3jpa.persistence.exception;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import co.adun.mvnejb3jpa.ExceptionMessage;
+import co.adun.mvnejb3jpa.persistence.PersistenceException;
+
+/** An exception that is thrown when there is LeadTrac specific data access error
+ *  e.g. Given Lead not found
+ * @author Mikhel Adun, Ram Mahajan
+ *
+ **/
+public class DataAccessException extends PersistenceException
+{
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("unused")
+	private List<ExceptionMessage> messages = new ArrayList<ExceptionMessage>();
+	@SuppressWarnings("unused")
+	private String message;
+
+	public DataAccessException() {
+		super();
+	}
+
+	public DataAccessException(String message, Throwable cause) {
+		super(message, cause);
+		this.message = message;
+	}
+
+	public DataAccessException(String message) {
+		super(new ExceptionMessage(message));
+	}
+
+	public DataAccessException(Throwable cause) {
+		super(cause);
+	}
+
+	public DataAccessException(Set<ExceptionMessage> messagess) {
+		super();
+		setmessagess(messagess);
+	}
+
+	public DataAccessException(ExceptionMessage messages) {
+		super();
+		add(messages);
+	}
+
+	public DataAccessException(List<String> messagess) {
+		super();
+		addStringMessages(messagess);
+	}
+
+}

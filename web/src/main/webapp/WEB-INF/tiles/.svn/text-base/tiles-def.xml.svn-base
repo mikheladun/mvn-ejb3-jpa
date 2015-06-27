@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	<!-- Base template for Login screen -->
+	<definition name="base" template="/WEB-INF/tiles/templates/base/template.jsp">
+		<put-attribute name="title" value="LeadTrac" type="string" />
+		<put-attribute name="style" value="/WEB-INF/tiles/templates/base/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/templates/base/script.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/templates/base/body.jsp" />
+	</definition>
+	<definition name="login" extends="base">
+		<put-attribute name="style" value="/WEB-INF/pages/auth/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/auth/script.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/auth/login.jsp" />
+	</definition>
+	<definition name="logout" extends="base">
+		<put-attribute name="style" value="/WEB-INF/pages/auth/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/auth/script.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/auth/logout.jsp" />
+	</definition>
+
+	<!-- Main template for other screens -->
+	<definition name="main" template="/WEB-INF/tiles/templates/main/template.jsp">
+		<put-attribute name="title" value="LeadTrac Web" type="string" />
+		<put-attribute name="pageTitle" value="LeadTrac Web" type="string" />
+		<put-attribute name="style" value="/WEB-INF/tiles/templates/main/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/templates/main/script.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/templates/main/header.jsp" />
+		<put-attribute name="nav" value="/WEB-INF/tiles/templates/main/nav.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/tiles/templates/main/sidebar.jsp" />
+		<put-attribute name="right" value="/WEB-INF/tiles/templates/main/right.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/templates/main/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/templates/main/footer.jsp" />
+	</definition>
+
+	<definition name="initiateLead" extends="main">
+		<put-attribute name="pageTitle" value="Initiate Lead" type="string" />
+		<put-attribute name="style" value="/WEB-INF/pages/initiateLead/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/initiateLead/script.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/pages/initiateLead/sidebar.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/initiateLead/initiate.jsp" />
+	</definition>
+
+	<!-- Main template for other screens -->
+	<definition name="default" template="/WEB-INF/tiles/templates/default/template.jsp">
+		<put-attribute name="title" value="LeadTrac Web" type="string" />
+		<put-attribute name="pageTitle" value="LeadTrac Web" type="string" />
+		<put-attribute name="style" value="/WEB-INF/tiles/templates/default/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/tiles/templates/default/script.jsp" />
+		<put-attribute name="header" value="/WEB-INF/tiles/templates/main/header.jsp" />
+		<put-attribute name="nav" value="/WEB-INF/tiles/templates/main/nav.jsp" />
+		<put-attribute name="breadcrumb" value="/WEB-INF/tiles/templates/default/breadcrumb.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/templates/main/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/tiles/templates/main/footer.jsp" />
+	</definition>
+
+	<definition name="workQueue" extends="default">
+		<put-attribute name="pageTitle" value="Work Queue" type="string" />
+		<put-attribute name="style" value="/WEB-INF/pages/workQueue/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/workQueue/script.jsp" />
+		<put-attribute name="breadcrumb" value="/WEB-INF/pages/workQueue/buttons.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/workQueue/workQueue.jsp" />
+	</definition>
+
+	<definition name="viewLead" extends="main">
+		<put-attribute name="pageTitle" value="" type="string" />
+		<put-attribute name="style" value="/WEB-INF/pages/viewLead/style.jsp" />
+		<put-attribute name="script" value="/WEB-INF/pages/viewLead/script.jsp" />
+		<put-attribute name="breadcrumb" value="/WEB-INF/pages/viewLead/breadcrumb.jsp" />
+		<put-attribute name="sidebar" value="/WEB-INF/pages/viewLead/sidebar.jsp" />
+		<put-attribute name="right" value="/WEB-INF/pages/viewLead/right.jsp" />
+		<put-attribute name="body" value="/WEB-INF/pages/viewLead/viewLead.jsp" />
+	</definition>
+
+</tiles-definitions>

@@ -1,0 +1,80 @@
+package co.adun.mvnejb3jpa.web.controller;
+
+import java.security.Principal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import co.adun.mvnejb3jpa.business.service.ExampleService;
+import co.adun.mvnejb3jpa.persistence.entity.ExampleEntity;
+import co.adun.mvnejb3jpa.web.controller.BaseController;
+import co.adun.mvnejb3jpa.web.model.ExampleModel;
+import co.adun.mvnejb3jpa.web.model.PageModel;
+import co.adun.mvnejb3jpa.web.validation.ExampleValidator;
+
+@Controller
+@RequestMapping(value = "/example")
+public class ExampleController extends BaseController {
+    private static final Logger logger = Logger.getLogger(ExampleController.class.getName());
+
+    @Autowired(required = false)
+    @Qualifier("exampleService")
+    public ExampleService service;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(new ExampleValidator());
+    }
+
+    @Override
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView doGet(HttpServletRequest request) {
+	Principal principal = request.getUserPrincipal();
+//	String name = WebSecurityContext.getUsername();
+
+	// var userId = ${pageContext.request.userPrincipal.principal.id}
+
+	ModelAndView mav = new ModelAndView("example");
+	ExampleModel model = new ExampleModel();
+
+	try {
+	    ExampleEntity member = new ExampleEntity();
+	    model.setEntity(member);
+	    model.setEntities(service.getMembers());
+
+	    mav.addObject("model", model);
+	    mav.addObject("member", new ExampleEntity());
+	} catch (Exception e) {
+	    logger.log(Level.SEVERE, e.getMessage(), e);
+	}
+
+	setPageModel(model);
+	return mav;
+    }
+
+    @Override
+    @RequestMapping(method = RequestMethod.POST)
+    public ModelAndView doPost(@Valid @ModelAttribute("model") PageModel model, BindingResult result, HttpServletRequest request) {
+	ExampleModel m = (ExampleModel) model;
+
+	if (!result.hasErrors()) {
+	    service.add(m.getEntity());
+	}
+
+	return doGet(request);
+    }
+
+}

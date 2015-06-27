@@ -1,0 +1,30 @@
+package co.adun.mvnejb3jpa.business.service;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravel;
+
+/**
+ * @author Mikhel Adun
+ */
+public interface SubjectTravelService extends BusinessService {
+
+    
+    /**
+     * Save subject Travel Info
+     * 
+     * @param ltSubjectTravel
+     *          
+     * @throws BusinessException
+     */
+    public void saveSubjectTravel(final LtSubjectTravel ltSubjectTravel) throws BusinessException;
+
+    /**
+     * Find Subject Travel Info by subject Id
+     * 
+     * @param lastName
+     * @param firstName
+     * @throws BusinessException
+     */
+    public LtSubjectTravel getSubjectTravel(final LtSubject ltSubject) throws BusinessException;
+}

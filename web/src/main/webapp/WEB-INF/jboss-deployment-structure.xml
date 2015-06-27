@@ -1,0 +1,26 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
+   <deployment>
+   	   <dependencies>
+   	   		<module name="com.h2database.h2"/>
+   	   		<module name="com.oracle"/>
+   	   		<module name="org.codehaus.jackson.jackson-core-asl"/>
+   	   		<module name="org.codehaus.jackson.jackson-mapper-asl"/>
+            <module name="org.slf4j"/>
+			<module name="org.apache.log4j" export="true"/>
+      		<module name="org.dom4j" export="true"/>
+      		<module name="org.apache.commons.logging" export="true"/>
+      		<module name="org.apache.commons.collections" export="true"/>
+      		<module name="org.slf4j" export="true"/>
+   	   </dependencies>
+   </deployment>
+   
+	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+
+    <deployment>
+	  <dependencies>
+        <module name="org.hibernate"/>
+        <module name="com.oracle"/>
+      </dependencies>
+    </deployment>
+
+</jboss-deployment-structure>

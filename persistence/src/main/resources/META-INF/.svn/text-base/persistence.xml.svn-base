@@ -1,0 +1,118 @@
+<persistence version="2.0"
+   xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+        http://java.sun.com/xml/ns/persistence
+        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+   <persistence-unit name="persistenceUnit" transaction-type="JTA">
+      <!-- If you are running in a production environment, add a managed 
+         data source, this example data source is just for development and testing! -->
+      <!-- The datasource is deployed as WEB-INF/spring-quickstart-ds.xml, you
+         can find it in the source at src/main/webapp/WEB-INF/spring-quickstart-ds.xml -->
+      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+      <jta-data-source>java:jboss/datasources/LeadTracDatasource</jta-data-source>
+
+		<class>co.adun.mvnejb3jpa.persistence.entity.ClassAdmissionCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.CountryCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.GenderCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LeadTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.MissionCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.NumberTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.PortEntryCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.SourceCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.SpecialProjectCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.StateProvinceCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.StatusCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.PhoneTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.ContactTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.EventTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.DisposCloseReasonCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.DisposCloseSystemCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LeadGeneratedFromCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.ActionCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.ApplicationLocationCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.UserRoleCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.VisaClassCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LicenseTypeCode</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.MissionCodeUser</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.RelationshipCode</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.TravelDirectionCode</class>
+
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLead</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtUser</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadSource</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumber</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtIdentifyingNumberSource</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadComment</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadHistory</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadIdentifyingNumber</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadSpecialProject</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubject</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectAlias</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectAliasSource</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectContact</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectContactPhone</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectContactSource</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectCitizenshipCountry</class>
+		<class>co.adun.mvnejb3jpa.persistence.entity.LtUserManagementAssociation</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtAssociatedSubject</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtAssociatedLead</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectContactEmail</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectPhoto</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravel</class>
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravelSource</class>
+
+ 		<class>co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject</class>
+
+	  	<exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+      <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+      <validation-mode>CALLBACK</validation-mode>
+
+      <properties>
+		 <property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/EntityManagerFactory" />
+		 <!-- https://docs.jboss.org/author/display/AS7/JPA+Reference+Guide -->
+         <!-- - We're still using hibernate3 -->
+         <!--
+         <property name="jboss.as.jpa.providerModule" value="hibernate3-bundled" />
+         -->
+
+         <!-- Properties for Hibernate -->
+		 <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.JTATransactionFactory"/>
+		 <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+		 <!-- 
+		 <property name="hibernate.transaction.auto_close_session" value="true"/>
+		 -->
+         <property name="hibernate.archive.autodetection" value="class, hbm" />
+		 <!-- Manage database schema on startup -->
+		 <!-- * validate: validate the schema, makes no changes to the database. 
+              * update: update the schema. 
+              * create: creates the schema, destroying previous data.
+              * create-drop: drop the schema at the end of the session. -->
+         <property name="hibernate.hbm2ddl.auto" value="validate" />
+         <!-- Recommended by Hibernate Annotations - 2.2.3.1. Generating the identifier property -->        
+         <property name="hibernate.id.new_generator_mappings" value="true"/>
+         <property name="hibernate.show_sql" value="true" />
+	  	 <property name="hibernate.format_sql" value="true" />
+	  	 <property name="hibernate.max_fetch_depth" value="4" />
+		 <property name="hibernate.cache.use_second_level_cache" value="true" />
+		 <property name="hibernate.cache.use_query_cache" value="true" />
+		 <property name="hibernate.cache.use_minimal_puts" value="true" />
+		 <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+		 <!-- Disable the second-level cache  --> 
+		 <!-- 
+  		 <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+  		  -->
+  		 <!-- SQL dialect -->
+  		 <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
+  		 <!-- JDBC connection pool (use the built-in) -->
+  		<property name="hibernate.connection.pool_size" value="5" />
+		<!-- Database connection settings
+  		<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+  		<property name="hibernate.connection.url" value="jdbc:oracle:thin:@127.0.0.1:1521:orcl" />
+  		<property name="hibernate.connection.username" value="leadtracm" />
+  		<property name="hibernate.connection.password" value="leadtracm" />
+  		 -->
+      </properties>
+   </persistence-unit>
+</persistence>

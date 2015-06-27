@@ -1,0 +1,40 @@
+10
+
+dir
+273
+file:///corp/ost/ws/svn/leadtrac/branches/sp7-3.0/leadtrac-example/src/main/webapp/resources
+file:///corp/ost/ws/svn/leadtrac
+
+
+
+2013-06-27T20:13:42.264000Z
+202
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+078485a5-5b29-43fc-8647-4798bc4bef41
+
+css
+dir
+
+images
+dir
+
+js
+dir
+
+pie
+dir
+

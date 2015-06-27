@@ -1,0 +1,12 @@
+package co.adun.mvnejb3jpa.persistence.eao;
+
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadIdentifyingNumber;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
+@Component
+public interface LtLeadIdentifyingNumberEao extends BaseEao<LtLeadIdentifyingNumber>{
+
+}

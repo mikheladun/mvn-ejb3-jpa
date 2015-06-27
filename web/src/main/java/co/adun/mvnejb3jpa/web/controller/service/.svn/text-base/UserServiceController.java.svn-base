@@ -1,0 +1,61 @@
+package co.adun.mvnejb3jpa.web.controller.service;
+
+import co.adun.business.service.OrganizationService;
+import co.adun.mvnejb3jpa.persistence.entity.LtUserManagementAssociation;
+import co.adun.mvnejb3jpa.web.model.PageModel;
+import co.adun.mvnejb3jpa.web.transform.UserMgmtAssocTransformer;
+
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.xml.transform.TransformerException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping(value = "/service/user")
+public class UserServiceController extends BaseServiceController {
+    private static final Logger logger = Logger.getLogger(UserServiceController.class.getName());
+
+    @Autowired(required = false)
+    @Qualifier("organizationService")
+    private OrganizationService service;
+
+    @Autowired
+    private UserMgmtAssocTransformer transformer;
+
+    @Override
+    @RequestMapping(value = "/userManagementAssoc", method = RequestMethod.GET, produces = "application/xml")
+    public @ResponseBody String doService(String... params) {
+	String userMgmtAssoc = null;
+	try {
+	    // get association between Analyst and Supervisors
+	    List<LtUserManagementAssociation> userManagementAssocList = service.getLtUserManagementAssociationList();
+
+	    userMgmtAssoc = transformer.transform(userManagementAssocList);
+
+	} catch (TransformerException te) {
+	    logger.severe(te.getMessage());
+	} catch (Exception e) {
+	    logger.severe(e.getMessage());
+	}
+
+	return userMgmtAssoc;
+    }
+
+	@Override
+	@RequestMapping(method = RequestMethod.POST, produces = "application/xml")
+	public @ResponseBody
+	String doService(@Valid @ModelAttribute("model") PageModel model, BindingResult result, HttpServletRequest request) {
+		return doService();
+	}
+}

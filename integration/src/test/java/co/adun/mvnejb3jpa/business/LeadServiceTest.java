@@ -1,0 +1,342 @@
+package co.adun.mvnejb3jpa.business;
+
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.xml.transform.TransformerException;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.business.service.LeadService;
+import co.adun.mvnejb3jpa.business.service.SupportDataService;
+import co.adun.mvnejb3jpa.business.service.UserService;
+import co.adun.mvnejb3jpa.persistence.eao.LtLeadEao;
+import co.adun.mvnejb3jpa.persistence.eao.LtSubjectEao;
+import co.adun.mvnejb3jpa.persistence.entity.ClassAdmissionCode;
+import co.adun.mvnejb3jpa.persistence.entity.ContactTypeCode;
+import co.adun.mvnejb3jpa.persistence.entity.CountryCode;
+import co.adun.mvnejb3jpa.persistence.entity.DisposCloseReasonCode;
+import co.adun.mvnejb3jpa.persistence.entity.DisposCloseSystemCode;
+import co.adun.mvnejb3jpa.persistence.entity.GenderCode;
+import co.adun.mvnejb3jpa.persistence.entity.LeadGeneratedFromCode;
+import co.adun.mvnejb3jpa.persistence.entity.LeadTypeCode;
+import co.adun.mvnejb3jpa.persistence.entity.LtAssociatedLead;
+import co.adun.mvnejb3jpa.persistence.entity.LtLead;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadComment;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSource;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSpecialProject;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectCitizenshipCountry;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectContact;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+import co.adun.mvnejb3jpa.persistence.entity.MissionCode;
+import co.adun.mvnejb3jpa.persistence.entity.RelationshipCode;
+import co.adun.mvnejb3jpa.persistence.entity.SpecialProjectCode;
+import co.adun.mvnejb3jpa.persistence.entity.StatusCode;
+import co.adun.mvnejb3jpa.web.EntityTransformer;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:/spring/spring-context-integration.xml" })
+@Transactional
+@TransactionConfiguration(defaultRollback = true)
+public class LeadServiceTest {
+	@Inject
+	private LeadService service;
+	@Inject
+	private LtSubjectEao subjectEao;
+	@Inject
+	private UserService userService;
+	@Inject
+	private SupportDataService supportDataService;
+	@Inject
+	private LtLeadEao eao;
+	@Inject
+	private EntityTransformer transformer;
+
+	// @Test
+	public void getLead() {
+		try {
+			LtLead ltLead = eao.findByIdDeep(new Long(100001));
+			String result = transformer.transform(ltLead);
+			System.out.println("Output String = " + result);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void getComments() {
+		try {
+			LtLead ltLead = new LtLead();
+			ltLead.setId(100002L);
+			List<LtLeadComment> comments = service.getComments(ltLead);
+			for (LtLeadComment item : comments) {
+				String xml = transformer.transform(item, true);
+				System.out.println(xml);
+			}
+		}
+		catch (BusinessException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+		catch (TransformerException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+	
+	@Test
+	public void parseDate()
+	{
+		String dateStr1 = "2013-07-02T06:06:39.817-04:00";
+		String dateStr2 = "06/04/2013 - 1726";
+		DateFormat timeFormat = new SimpleDateFormat("yyyy-MM-DD'T'HH:mm:ss", Locale.US);
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+		try {
+			String dateStr = dateStr1;
+	        Date date = dateStr.matches("\\d{4}\\-\\d{2}\\-\\d{2}.*") ? timeFormat.parse(dateStr) : dateFormat.parse(dateStr);
+	        System.out.println(date);
+			dateStr = dateStr2;
+	        date = dateStr.matches("\\d{4}\\-\\d{2}\\-\\d{2}.*") ? timeFormat.parse(dateStr) : dateFormat.parse(dateStr);
+	        System.out.println(date);
+        }
+        catch (ParseException e) {
+			e.printStackTrace();
+			Assert.fail();
+        }
+	}
+
+	// @Test
+	public void deleteAll() {
+
+		try {
+			List<LtLead> ltLeads = eao.findAll();
+			for (LtLead ltLead : ltLeads) {
+				ltLead = service.getLead((Long) ltLead.getId());
+				eao.delete(ltLead);
+			}
+		}
+		catch (BusinessException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	public void save() {
+
+		try {
+			LtLead ltLead = new LtLead();
+
+			MissionCode missionCode = new MissionCode();
+			missionCode = supportDataService.getMissionCodes().iterator().next();
+			ltLead.setMissionCode(missionCode);
+
+			DisposCloseSystemCode disposCloseSystemCode = new DisposCloseSystemCode();
+			disposCloseSystemCode = supportDataService.getDisposCloseSystemCodes().iterator().next();
+			ltLead.setDisposCloseSystemCode(disposCloseSystemCode);
+
+			LtUser ltUserByLtAssignToUserId = new LtUser();
+			ltUserByLtAssignToUserId = userService.getCurrentUser("Analyst");
+			ltLead.setLtUserByLtAssignToUserId(ltUserByLtAssignToUserId);
+
+			LeadTypeCode leadTypeCode = new LeadTypeCode();
+			leadTypeCode = supportDataService.getLeadTypeCodes().iterator().next();
+			ltLead.setLeadTypeCode(leadTypeCode);
+
+			LeadGeneratedFromCode leadGeneratedFromCode = new LeadGeneratedFromCode();
+			leadGeneratedFromCode = supportDataService.getLeadGenFrmCodes().iterator().next();
+			ltLead.setLeadGeneratedFromCode(leadGeneratedFromCode);
+
+			StatusCode statusCode = new StatusCode();
+			statusCode = supportDataService.getStatusCodes().iterator().next();
+			ltLead.setStatusCode(statusCode);
+
+			DisposCloseReasonCode disposCloseReasonCode = new DisposCloseReasonCode();
+			disposCloseReasonCode = supportDataService.getDisposCloseReasonCodes().iterator().next();
+			ltLead.setDisposCloseReasonCode(disposCloseReasonCode);
+
+			Set<LtLeadSpecialProject> ltLeadSpecialProjects = new HashSet<LtLeadSpecialProject>();
+			LtLeadSpecialProject ltLeadSpecialProject = new LtLeadSpecialProject();
+			ltLeadSpecialProject.setLtLead(ltLead);
+			SpecialProjectCode specialProjectCode = new SpecialProjectCode();
+			specialProjectCode.setId(103L);
+			ltLeadSpecialProject.setSpecialProjectCode(specialProjectCode);
+			ltLeadSpecialProjects.add(ltLeadSpecialProject);
+			ltLead.setLtLeadSpecialProjects(ltLeadSpecialProjects);
+
+			LtSubject subject = subjectEao.findById(189L);
+			LtSubject ltSubject = ltLead.getLtSubject();
+			// if (subjects.isEmpty()) {
+			ltSubject = new LtSubject();
+			ltSubject.setLastname("Bush");
+			ltSubject.setFirstname("George");
+			// } else {
+			ltSubject = subject;
+			// }
+			GenderCode genderCode = new GenderCode();
+			genderCode = supportDataService.getGenderCodes().iterator().next();
+			ltSubject.setGenderCode(genderCode);
+			ClassAdmissionCode classAdmissionCode = new ClassAdmissionCode();
+			classAdmissionCode = supportDataService.getClassAdmCodes().iterator().next();
+			ltSubject.setClassAdmissionCode(classAdmissionCode);
+
+			CountryCode cob = supportDataService.getCountryCodes().get(2);
+			ltSubject.setCountryCode(cob);
+			Date bDate = new java.sql.Timestamp(System.currentTimeMillis());
+			ltSubject.setBirthDate(bDate);
+
+			LtSubjectContact ltSubjectContact = new LtSubjectContact();
+			ltSubjectContact.setLtSubject(ltSubject);
+
+			LtSubjectCitizenshipCountry coc1 = new LtSubjectCitizenshipCountry();
+			coc1.setCountryCode(supportDataService.getCountryCodes().get(0));
+			coc1.setLtSubject(ltSubject);
+			LtSubjectCitizenshipCountry coc2 = new LtSubjectCitizenshipCountry();
+			coc2.setCountryCode(supportDataService.getCountryCodes().get(1));
+			coc2.setLtSubject(ltSubject);
+			Set<LtSubjectCitizenshipCountry> cocSet = new HashSet<LtSubjectCitizenshipCountry>();
+			cocSet.add(coc1);
+			cocSet.add(coc2);
+			ltSubject.setLtSubjectCitizenshipCountries(cocSet);
+
+			ltLead.setLtSubject(ltSubject);
+
+			LtLeadSource ltLeadSource = new LtLeadSource();
+			ltLeadSource.setName("Paul, Pierce");
+			ltLeadSource.setTitle("Agent");
+			ltLeadSource.setLtLead(ltLead);
+			ltLeadSource.setContact("@agent");
+			ContactTypeCode contactTypeCode = new ContactTypeCode();
+			contactTypeCode.setId(101L);
+			ltLeadSource.setContactTypeCode(contactTypeCode);
+
+			Set<LtLeadSource> ltLeadSources = new HashSet<LtLeadSource>();
+			ltLeadSources.add(ltLeadSource);
+			ltLead.setLtLeadSources(ltLeadSources);
+
+			LtLeadComment ltLeadComment = new LtLeadComment();
+			ltLeadComment.setLeadComment("Lead comment lorem ipsum dolore");
+			ltLeadComment.setLtLead(ltLead);
+			Set<LtLeadComment> ltLeadComments = new HashSet<LtLeadComment>();
+			ltLeadComments.add(ltLeadComment);
+			ltLead.setLtLeadComments(ltLeadComments);
+
+			Set<LtLeadSubject> ltLeadSubjects = new HashSet<LtLeadSubject>();
+			LtLeadSubject ltLeadSubject = new LtLeadSubject();
+			ltLeadSubject.setLtLead(ltLead);
+			ltLeadSubject.setLtSubject(ltSubject);
+			// ltLeadSubject.setLsid(System.currentTimeMillis());
+			ltLeadSubjects.add(ltLeadSubject);
+			ltLead.setLtLeadSubjects(ltLeadSubjects);
+
+			// Associated Leads
+			LtAssociatedLead ltAssociatedLead = new LtAssociatedLead();
+
+			RelationshipCode relationshipCode = new RelationshipCode();
+			relationshipCode.setId(103L);
+			ltAssociatedLead.setLtLeadByLtLeadId(ltLead);
+			LtLead ltLeadByLtAssociatedLeadId = new LtLead();
+			ltAssociatedLead.setLtLeadByLtAssociatedLeadId(ltLeadByLtAssociatedLeadId);
+
+			LtSubject ltAssociateSubject = new LtSubject();
+			ltAssociateSubject.setLastname("Savage");
+			ltAssociateSubject.setFirstname("Randy");
+			ltLeadByLtAssociatedLeadId.setLtSubject(ltAssociateSubject);
+
+			Set<LtAssociatedLead> ltAssociatedLeadsForLtLeadId = new HashSet<LtAssociatedLead>();
+			ltAssociatedLeadsForLtLeadId.add(ltAssociatedLead);
+			ltLead.setLtAssociatedLeadsForLtLeadId(ltAssociatedLeadsForLtLeadId);
+
+			List<LtLead> ltLeads = new ArrayList<LtLead>();
+			ltLeads.add(ltLead);
+			ltLeads = service.save(ltLeads);
+
+			Serializable id = ltLead.getId();
+			Assert.assertNotNull(id);
+
+		}
+		catch (BusinessException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	/**
+	 * Update comments to an existing lead Test.
+	 */
+	public void updateComments() {
+
+		try {
+			// lookup the Lt-Lead
+			LtLead ltLead = eao.findByIdDeep(new Long(100001));
+			Set<LtLeadComment> ltLeadComments = (Set<LtLeadComment>) service.getComments(ltLead);
+
+			for (LtLeadComment ltLeadComment : ltLeadComments) {
+				// update the comment with id= 101
+				System.out.println(" Lead Comment Id=" + ltLeadComment.getId());
+				if (ltLeadComment.getId() == 101L) {
+					// LtLeadComment newComment = new LtLeadComment();
+					ltLeadComment.setLeadComment("Lead comment Update lorem ipsum dolore");
+					ltLeadComment.setLtLead(ltLead);
+					// //Set<LtLeadComment> ltLeadComments = new
+					// HashSet<LtLeadComment>();
+					// ltLeadComments.add(ltLeadComment);
+					ltLead.setLtLeadComments(ltLeadComments);
+					// update the lead
+					service.save(ltLead);
+					break;
+				}
+			}
+
+		}
+		catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Add new comments to an existing lead Test.
+	 */
+	public void addComments() {
+
+		try {
+			LtLead ltLead = new LtLead();
+			ltLead.setId(new Long(100000));
+			List<LtLeadComment> comments = service.getComments(ltLead);
+			LtLeadComment ltLeadComment = new LtLeadComment();
+			ltLeadComment.setLeadComment("Adding lead comments to an existing Lead comment lorem ipsum dolore");
+			Set<LtLeadComment> ltLeadComments = (Set<LtLeadComment>) service.getComments(ltLead);
+			ltLeadComment.setLtLead(ltLead);
+			ltLeadComments.add(ltLeadComment);
+			ltLead.setLtLeadComments(ltLeadComments);
+			service.save(ltLead);
+
+		}
+		catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+}

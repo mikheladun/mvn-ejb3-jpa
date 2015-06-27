@@ -1,0 +1,14 @@
+.ui-dialog { background: #f2f2f2; width:400px !important; }
+.ui-dialog .ui-dialog-titlebar { background:url('../../resources/images/leadtrac-sm.jpg'); background-repeat:no-repeat; background-position:-860% 0%; background-color:#a8d0ea; font-weight:bolder; font-size:120% !important; }
+.ui-dialog .ui-dialog-titlebar a.ui-dialog-titlebar-close { background:url('../../resources/images/close.png'); background-repeat:no-repeat; background-position:46% 46%; }
+.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus{ padding:1px !important; }
+.ui-dialog .ui-dialog-content { height:auto; }
+.ui-dialog .ui-dialog-buttonpane { border-top:1px solid #ccc; }
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { }
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .cancel,
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .cancel:focus { border:0 !important; background:none; text-decoration:underline; }
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .cancel.ui-state-focus,
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .cancel.ui-state-focus:focus { border:0 !important; }
+.ui-dialog .ui-dialog-content ul.message, .ui-dialog .ui-dialog-content ul.error { margin:0 !important; display:block; }
+.ui-dialog .ui-dialog-content ul.message li, .ui-dialog .ui-dialog-content ul.error li { margin:.2em 0; list-style:none !important; width:auto; float:left; }
+.ui-dialog .ui-dialog-content ul.message li.label, .ui-dialog .ui-dialog-content ul.error li.label { width:50%; font-weight:bolder; }

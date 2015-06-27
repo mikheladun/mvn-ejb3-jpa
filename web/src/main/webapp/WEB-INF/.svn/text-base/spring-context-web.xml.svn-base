@@ -1,0 +1,79 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
+		http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd  
+		http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-3.0.xsd 
+        http://www.springframework.org/schema/cache 
+        http://www.springframework.org/schema/cache/spring-cache-3.0.xsd">
+
+	<context:component-scan base-package="co.adun.mvnejb3jpa.web" />
+	<!-- Allows aspects to be Spring-aware with @Configurable (@Autowired works) -->
+	<context:spring-configured />
+
+	<mvc:annotation-driven />
+	<!-- JSR-303 support will be detected on classpath and enabled automatically -->
+	<mvc:annotation-driven validator="validator" />
+
+	<mvc:resources mapping="/static/**" location="/" />
+
+	<mvc:default-servlet-handler />
+
+	<!-- Maps incoming requests to the appropriate controller based on the annotations 
+		on the controller methods. -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+	
+	<!-- Resolves views selected for rendering by Tiles -->
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<!--Set up your tiles definition -->
+				<value>/WEB-INF/tiles/tiles-def.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<!--Tiles IS NOT JSP. So you can not use JSP stuffs like .jsp suffix -->
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/messages/ApplicationResources" />
+		<property name="cacheSeconds" value="0" />
+	</bean>
+
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<jee:local-slsb id="userService" jndi-name="java:global/UserService" business-interface="co.adun.business.service.UserService" />
+	<jee:local-slsb id="leadService" jndi-name="java:global/LeadService" business-interface="co.adun.business.service.LeadService" />
+	<jee:local-slsb id="subjectService" jndi-name="java:global/SubjectService" business-interface="co.adun.business.service.SubjectService" />
+	<jee:local-slsb id="leadHistoryService" jndi-name="java:global/LeadHistoryService" business-interface="co.adun.business.service.LeadHistoryService" />
+	<jee:local-slsb id="leadSubjectService" jndi-name="java:global/LeadSubjectService" business-interface="co.adun.business.service.LeadSubjectService" />
+	<jee:local-slsb id="organizationService" jndi-name="java:global/OrganizationService" business-interface="co.adun.business.service.OrganizationService" />
+	<jee:local-slsb id="workQueueService" jndi-name="java:global/WorkQueueService" business-interface="co.adun.business.service.WorkQueueService" />
+	<jee:local-slsb id="biographicInfoService" jndi-name="java:global/BiographicInfoService" business-interface="co.adun.business.service.BiographicInfoService" />
+	<jee:local-slsb id="entryService" jndi-name="java:global/EntryService" business-interface="co.adun.business.service.EntryService" />
+	<jee:local-slsb id="dispositionService" jndi-name="java:global/DispositionService" business-interface="co.adun.business.service.DispositionService" />
+	<jee:local-slsb id="subjectTravelService" jndi-name="java:global/SubjectTravelService" business-interface="co.adun.business.service.SubjectTravelService" />
+	<jee:local-slsb id="leadCommentsService" jndi-name="java:global/LeadCommentsService" business-interface="co.adun.business.service.LeadCommentsService" />
+	<jee:local-slsb id="userManagementService" jndi-name="java:global/UserManagementService" business-interface="co.adun.business.service.UserManagementService" />
+	<!-- Cache instance -->
+	<bean id="supportDataCache" class="co.adun.mvnejb3jpa.web.cache.SupportDataCache" />
+	<jee:local-slsb id="supportDataService" jndi-name="java:global/SupportDataService" business-interface="co.adun.business.service.SupportDataService" />
+
+</beans>

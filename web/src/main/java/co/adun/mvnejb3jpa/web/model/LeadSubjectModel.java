@@ -1,0 +1,102 @@
+package co.adun.mvnejb3jpa.web.model;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import co.adun.mvnejb3jpa.persistence.entity.LtLead;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+import co.adun.mvnejb3jpa.web.model.PageModel;
+
+/**
+ * @author Mikhel Adun
+ */
+@Component
+public class LeadSubjectModel implements PageModel {
+
+	LtLead ltLead;
+	LtSubject ltSubject;
+
+	BiographicInformationModel biographicModel;
+	EntryInformationModel entryModel;
+	CommentPageModel commentModel;
+	IdentifyingNumberModel identifyingNumberModel;
+	TravelInformationModel travelModel;
+	DispositionModel dispositionModel;
+
+	List<LtUser> supervisors;
+
+	public LtLead getLtLead() {
+		return ltLead;
+	}
+
+	public void setLtLead(LtLead ltLead) {
+		this.ltLead = ltLead;
+	}
+
+	public LtSubject getLtSubject() {
+		return ltSubject;
+	}
+
+	public void setLtSubject(LtSubject ltSubject) {
+		this.ltSubject = ltSubject;
+	}
+
+	public BiographicInformationModel getBiographicModel() {
+		return biographicModel;
+	}
+
+	public void setBiographicModel(BiographicInformationModel biographicModel) {
+		this.biographicModel = biographicModel;
+	}
+
+	public EntryInformationModel getEntryModel() {
+		return entryModel;
+	}
+
+	public void setEntryModel(EntryInformationModel entryModel) {
+		this.entryModel = entryModel;
+	}
+
+	public IdentifyingNumberModel getIdentifyingNumberModel() {
+		return identifyingNumberModel;
+	}
+
+	public void setIdentifyingNumberModel(IdentifyingNumberModel identifyingNumberModel) {
+		this.identifyingNumberModel = identifyingNumberModel;
+	}
+
+	public TravelInformationModel getTravelModel() {
+		return travelModel;
+	}
+
+	public void setTravelModel(TravelInformationModel travelModel) {
+		this.travelModel = travelModel;
+	}
+
+	public void setSupervisors(List<LtUser> supervisors) {
+		this.supervisors = supervisors;
+	}
+
+	public List<LtUser> getSupervisors() {
+		return this.supervisors;
+	}
+
+	public DispositionModel getDispositionModel() {
+		return dispositionModel;
+	}
+
+	public void setDispositionModel(DispositionModel dispositionModel) {
+		this.dispositionModel = dispositionModel;
+	}
+
+	public CommentPageModel getCommentModel() {
+		return commentModel;
+	}
+
+	public void setCommentModel(CommentPageModel commentModel) {
+		this.commentModel = commentModel;
+	}
+
+}

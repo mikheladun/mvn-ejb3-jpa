@@ -1,0 +1,16 @@
+package co.adun.business.service;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.persistence.entity.LtLeadSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+
+import java.util.List;
+
+/**
+ * @author Mikhel Adun
+ */
+public interface WorkQueueService extends BusinessService {
+
+    List<LtLeadSubject> getWorkQueueItems(LtUser ltUser) throws BusinessException;
+
+}

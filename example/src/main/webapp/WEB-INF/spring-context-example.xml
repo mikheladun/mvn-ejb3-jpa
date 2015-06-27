@@ -1,0 +1,94 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
+		http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd  
+		http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-3.0.xsd 
+        http://www.springframework.org/schema/cache 
+        http://www.springframework.org/schema/cache/spring-cache-3.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<context:component-scan base-package="co.adun.mvnejb3jpa" />
+	<!-- Allows aspects to be Spring-aware with @Configurable (@Autowired works) -->
+	<context:spring-configured />
+	<mvc:annotation-driven />
+	<!-- JSR-303 support will be detected on classpath and enabled automatically -->
+	<mvc:annotation-driven validator="validator" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<mvc:resources mapping="/static/**" location="/" />
+	<mvc:default-servlet-handler />
+    <tx:jta-transaction-manager />
+
+	<!-- holding properties for database connectivity -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"/>
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+		</property>
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence-example.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/LeadTracDatasource" expected-type="javax.sql.DataSource"/>
+
+	<!-- uses the persistence unit defined in the META-INF/persistence.xml JPA configuration file -->  
+	<bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+   		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+    </bean>
+
+	<!-- Maps incoming requests to the appropriate controller based on the annotations 
+		on the controller methods. -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<!-- Resolves views selected for rendering by Tiles -->
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<!--Set up your tiles definition -->
+				<value>/WEB-INF/tiles/tiles-def.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<!--Tiles IS NOT JSP. So you can not use JSP stuffs like .jsp suffix -->
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/messages" />
+		<property name="cacheSeconds" value="0" />
+	</bean>
+
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- ExampleService -->
+	<jee:local-slsb id="exampleService" jndi-name="java:global/ExampleService" business-interface="co.adun.business.service.ExampleService" />
+	<jee:local-slsb id="exampleEao" jndi-name="java:global/ExampleEao" business-interface="co.adun.business.service.ExampleEao" />
+
+</beans>

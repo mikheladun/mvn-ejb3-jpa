@@ -1,0 +1,35 @@
+package co.adun.business.service.impl;
+
+import java.util.List;
+
+import co.adun.business.exception.BusinessException;
+import co.adun.business.service.UserManagementService;
+import co.adun.business.service.UserService;
+import co.adun.mvnejb3jpa.persistence.eao.LtUserManagementAssociationEao;
+import co.adun.mvnejb3jpa.persistence.entity.LtUser;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Component;
+
+@Component
+@Stateless
+@EJB(name = "java:global/UserManagementService", beanInterface = UserManagementService.class)
+public class UserManagementServiceImpl implements UserManagementService {
+	
+	@Inject
+	private LtUserManagementAssociationEao usermgmtEao;
+	
+	@Override
+	public List<LtUser> findSupervisorsByAnalyst(LtUser analyst) throws BusinessException{
+		return usermgmtEao.findSupervisorsByAnalyst(analyst);
+	}
+	
+	@Override
+	public List<LtUser> findAnalystsBySupervisor(LtUser supervisor) throws BusinessException{
+		return usermgmtEao.findAnalystsBySupervisor(supervisor);
+	}
+
+}

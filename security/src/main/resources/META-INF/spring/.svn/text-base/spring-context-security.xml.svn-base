@@ -1,0 +1,107 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd  
+		http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<context:component-scan base-package="co.adun.mvnejb3jpa" />
+	<!-- Allows aspects to be Spring-aware with @Configurable (@Autowired works) -->
+	<context:spring-configured />
+
+	<mvc:annotation-driven />
+
+	<!-- Spring Security -->
+	<bean id="logoutRequestHandler" class="co.adun.mvnejb3jpa.web.auth.LogoutRequestHandler" />
+	<!-- This is where we configure Spring-Security -->
+	<security:global-method-security pre-post-annotations="enabled" access-decision-manager-ref="accessDecisionManager" />
+	<security:http auto-config="true" use-expressions="true" access-denied-page="/denied.jsp">
+		<security:intercept-url pattern="/**/css/**" access="permitAll" />
+		<security:intercept-url pattern="/**/js/**" access="permitAll" />
+		<security:intercept-url pattern="/resources/**" access="permitAll" />
+		<security:intercept-url pattern="/**/images/**" access="permitAll" />
+		<security:intercept-url pattern="/login.jsp" access="permitAll" />
+		<security:intercept-url pattern="/logout.jsp" access="permitAll" />
+		<security:intercept-url pattern="/denied.jsp" access="permitAll" />
+		<security:intercept-url pattern="/**" access="hasAnyRole('AN','SU','SA','AD')" />
+		<security:form-login 
+			login-page="/login.jsp"
+			authentication-failure-url="/login.jsp?error=true"
+			always-use-default-target="true"
+			default-target-url="/home.jsp"></security:form-login>
+		<security:logout 
+			logout-success-url="/logout.jsp" 
+			invalidate-session="true" 
+			delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"></security:logout> 
+	</security:http>
+
+	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+        <property name="decisionVoters">
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter">
+                    <property name="rolePrefix" value=""/>
+                </bean>
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+            </list>
+    	</property>
+	</bean>
+
+	<security:authentication-manager>
+	   <security:authentication-provider>
+		<security:jdbc-user-service data-source-ref="dataSource"
+		   users-by-username-query="
+		      select username as username, password as password, enabled as enabled from LT_USER where username = ?" 
+		   authorities-by-username-query="
+		      select u.username as username, ur.abbreviation as role_name from LT_USER u, USER_ROLE_CODE ur 
+		      where u.user_role_code_id = ur.id and u.username = ?" 
+		/>
+	   </security:authentication-provider>
+	</security:authentication-manager>
+	
+	<!-- Use a Md5 encoder since the user's passwords are stored as Md5 in the database -->
+ 	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+ 	<!-- A custom service where Spring will retrieve users and their corresponding access levels  -->
+ 	<!-- 
+ 	<bean id="authenticationService" class="co.adun.business.service.AuthenticationService"/>
+     
+    <security:ldap-server />
+    <security:authentication-manager alias="authenticationManager">
+        <sec:authentication-provider ref="ldapAuthProvider"></sec:authentication-provider>
+    </security:authentication-manager>
+     
+    <beans:bean id="ldapContextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <beans:constructor-arg value="ldap://localhost:12389/o=ice"/>
+        <beans:property name="userDn" value="uid=admin,ou=system"/>
+        <beans:property name="password" value="secret"/>
+    </beans:bean>
+     
+    <beans:bean id="ldapAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <beans:constructor-arg ref="ldapContextSource"/>
+                <beans:property name="userDnPatterns">
+                    <beans:list>
+                        <beans:value>uid={0},ou=Users</beans:value>
+                    </beans:list>
+                </beans:property>
+            </beans:bean>
+        </beans:constructor-arg>
+        <beans:constructor-arg>
+            <beans:bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
+                <beans:constructor-arg ref="ldapContextSource"/>
+                <beans:constructor-arg value="ou=Groups"/>
+                <beans:property name="groupRoleAttribute" value="cn"/>
+            </beans:bean>
+        </beans:constructor-arg>
+    </beans:bean>
+ 
+    
+   	 -->
+  
+</beans>

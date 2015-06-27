@@ -1,0 +1,53 @@
+package co.adun.mvnejb3jpa.web.validation;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Logger;
+
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+
+import co.adun.mvnejb3jpa.web.model.DateValueModel;
+import co.adun.mvnejb3jpa.web.model.ValueModel;
+
+@Component
+public class DateModelValidator extends BaseValidator<ValueModel> {
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(DateModelValidator.class.getName());
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+	return ValueModel.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+	/*----------------------------------------------\
+	| This is generic date validation, and can be
+	| applied to any date.
+	\----------------------------------------------*/
+
+	DateValueModel dateValueModel = (DateValueModel) target;
+	if (dateValueModel != null) {
+	    Date input = dateValueModel.getAsDate();
+	    Date current = new Date();
+
+	    // Date.getYear() is deprecated, this is a workaround.
+
+	    Calendar inputCalendar = Calendar.getInstance();
+	    if (input != null) {
+		inputCalendar.setTime(input);
+		Calendar currentCalendar = Calendar.getInstance();
+		currentCalendar.setTime(current);
+		int inputYear = inputCalendar.get(Calendar.YEAR);
+		int currentYear = currentCalendar.get(Calendar.YEAR);
+
+		// check to see if within the last 150 years
+		if (inputYear < currentYear - 150) {
+		    errors.reject("Date.150yrs", "Date should be within the last 150 years.");
+		}
+	    }
+	}
+    }
+}

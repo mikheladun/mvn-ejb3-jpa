@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/springframework/spring-aspects/3.2.2.RELEASE/spring-aspects-3.2.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/drivers/hibernate-entitymanager-4.2.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/drivers/hibernate-core-4.2.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/hibernate/hibernate-validator/4.2.0.Final/hibernate-validator-4.2.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/hibernate/common/hibernate-commons-annotations/4.0.1.Final/hibernate-commons-annotations-4.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/hibernate/hibernate-validator-annotation-processor/4.3.1.Final/hibernate-validator-annotation-processor-4.3.1.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.1.Final/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/hibernate/hibernate-ehcache/4.1.1.Final/hibernate-ehcache-4.1.1.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/slf4j/slf4j-simple/1.6.4/slf4j-simple-1.6.4.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/org/jboss/jboss-ejb-client/1.0.0.Final/jboss-ejb-client-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/drivers/ojdbc5.jar"/>
+	<classpathentry kind="lib" path="/Users/kalyan/.m2/repository/net/sf/ehcache/ehcache-core/2.4.3/ehcache-core-2.4.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

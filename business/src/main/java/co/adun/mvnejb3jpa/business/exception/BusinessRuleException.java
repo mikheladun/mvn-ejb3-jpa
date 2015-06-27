@@ -1,0 +1,133 @@
+package co.adun.mvnejb3jpa.business.exception;
+
+import java.util.Collection;
+
+/** An exception that is thrown in case of business rule violation
+*
+* @author Ram Mahajan
+*
+**/
+
+
+public class BusinessRuleException extends BusinessException {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Collection<String> values;
+
+    protected BusinessRuleException() {
+    	super();
+    }
+
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with a detail message.
+     * @param message the detail message.
+     * @param exception the wrapped exception.
+     */
+    public BusinessRuleException(String message, Exception exception) {
+    	super(message, exception);
+    }
+
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with a detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     * @param exception the wrapped exception.
+     */
+    public BusinessRuleException(String message, String key, Exception exception) {
+    	super(message, key, exception);
+    }
+
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with a detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     * @param values Used for substitution into the message in the resource bundle.
+     * @param exception the wrapped exception.
+     */
+    public BusinessRuleException(String message, String key, Collection<String> values, Exception exception) {
+		super(message, key, exception);
+		setValues( values );
+    }
+    
+    /**
+     * Creates a BusinessRuleException with the specified detail message.
+     * @param message the detail message.
+     */
+    public BusinessRuleException(String message) {
+    	super(message);
+    }
+
+    /**
+     * Creates a BusinessRuleException with the specified detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     */
+    public BusinessRuleException(String message, String key ) {
+    	super(message, key);
+    }
+
+
+    /**
+     * Creates a BusinessRuleException with the specified detail message.
+     * @param message the detail message.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     * @param values Used for substitution into the message in the resource bundle.
+     */
+    public BusinessRuleException(String message, String key, Collection<String> values ) {
+		super(message, key);
+		setValues( values );
+    }
+    
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with no detail message.
+     * @param exception the wrapped exception.
+     */
+    public BusinessRuleException(Exception exception) {
+    	super(exception);
+    }
+
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with no detail message.
+     * @param exception the wrapped exception.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     */
+    public BusinessRuleException(Exception exception, String key) {
+    	super(exception, key);
+    }
+
+    /**
+     * Creates a new BusinessRuleException wrapping another exception, and with no detail message.
+     * @param exception the wrapped exception.
+     * @param key The key used to pull the presentation level message from the resource bundle.
+     * @param values Used for substitution into the message in the resource bundle.
+     */
+    public BusinessRuleException(Exception exception, String key, Collection<String> values ) {
+		super(exception, key);
+		setValues( values );
+    }
+
+    /**
+     * Get the Values object array.
+     * @return the Values value.
+     */
+    public Object[] getValues() {
+    	if(values == null) {
+    		return null;
+    	}
+    	return values.toArray();
+    }
+
+    /**
+     * Set the Values value.
+     * @param newValues The new Values value.
+     */
+    public void setValues(Collection<String> newValues) {
+    	this.values = newValues;
+    }
+
+    
+
+}

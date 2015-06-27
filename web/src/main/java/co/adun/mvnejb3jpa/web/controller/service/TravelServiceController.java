@@ -1,0 +1,131 @@
+package co.adun.mvnejb3jpa.web.controller.service;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import co.adun.mvnejb3jpa.business.exception.BusinessException;
+import co.adun.mvnejb3jpa.business.service.SubjectTravelService;
+import co.adun.mvnejb3jpa.business.service.SupportDataService;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubject;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravel;
+import co.adun.mvnejb3jpa.persistence.entity.LtSubjectTravelSource;
+import co.adun.mvnejb3jpa.web.model.LeadSubjectModel;
+import co.adun.mvnejb3jpa.web.model.PageModel;
+import co.adun.mvnejb3jpa.web.model.TravelInformationModel;
+import co.adun.mvnejb3jpa.web.utils.PageModelUtils;
+
+@Controller
+@RequestMapping(value = "/service/travel")
+public class TravelServiceController extends BaseServiceController {
+	private static final Logger logger = Logger.getLogger(TravelServiceController.class.getName());
+
+	@Autowired(required = false)
+	@Qualifier("subjectTravelService")
+	SubjectTravelService travelService;
+
+	@Autowired(required = false)
+	@Qualifier("supportDataService")
+	SupportDataService supportDataService;
+
+	@Autowired
+	LeadSubjectModel model;
+
+	@Override
+	@RequestMapping(method = RequestMethod.POST)
+	public ModelAndView doPost(@Valid @ModelAttribute("model") PageModel model, BindingResult result, HttpServletRequest request) {
+		return new ModelAndView("forward:/service/travel/post");
+	}
+
+	@Override
+	@RequestMapping(value = "/post", method = RequestMethod.POST, produces = "application/xml")
+	public @ResponseBody
+	String doService(@ModelAttribute("model") PageModel pageModel, BindingResult result, HttpServletRequest request) {
+		LeadSubjectModel model = (LeadSubjectModel) pageModel;
+
+		StringBuffer response = new StringBuffer();
+		try {
+			if (!result.hasErrors()) {
+				TravelInformationModel travelModel = model.getTravelModel();
+
+				LtSubject ltSubject = new LtSubject();
+				ltSubject.setId(model.getLtLead().getLtSubject().getId());
+
+				LtSubjectTravel ltSubjectTravel = travelModel.getLtSubjectTravel();
+				ltSubjectTravel.setLtSubject(model.getLtLead().getLtSubject());
+				ltSubjectTravel.setTravelDate(PageModelUtils.getDate(travelModel.getTravelDate()));				 
+				Long directionCode = PageModelUtils.getCode(ltSubjectTravel.getTravelDirectionCode().getAbbreviation());
+				if (directionCode != null) {
+					ltSubjectTravel.getTravelDirectionCode().setId(directionCode);
+				}
+				else {
+					ltSubjectTravel.setTravelDirectionCode(null);
+				}
+
+				Set<LtSubjectTravelSource> sources = new HashSet<LtSubjectTravelSource>();
+				for (LtSubjectTravelSource source : travelModel.getSources()) {
+					Long code = PageModelUtils.getCode(source.getSourceCode().getAbbreviation());
+					if (code != null) {
+						source.getSourceCode().setId(code);
+						sources.add(source);
+					}
+				}
+				ltSubjectTravel.setLtSubjectTravelSources(sources);
+
+				travelService.saveSubjectTravel(ltSubjectTravel);
+
+				response.append("<response status='success'>");
+				response.append("<message code=''>");
+
+				response.append("</message>");
+
+			}
+			else {
+				response.append("<response status='error'>");
+
+				for (FieldError error : result.getFieldErrors()) {
+					response.append("<error code='").append(error.getField()).append("' message='").append(error.getDefaultMessage()).append("' />");
+				}
+			}
+		}
+		catch (BusinessException e) {
+			response.append("<response status='error'>");
+			response.append("<error code='").append("").append("' message='").append(e.getMessage()).append("' />");
+			logger.log(Level.SEVERE, e.getMessage(), e);
+
+		}
+		finally {
+		}
+
+		return response.append("</response>").toString();
+	}
+
+	@ModelAttribute("model")
+	public PageModel getPageModel() {
+		return this.model;
+	}
+
+	@Override
+	@RequestMapping(method = RequestMethod.GET, produces = "application/xml")
+	public @ResponseBody
+	String doService(String... params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
